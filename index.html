@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Smart AI Interview Trainer</title>
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+.box {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: auto;
+}
+button {
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+#question { font-size: 18px; margin: 20px 0; }
+#feedback { margin-top: 20px; color: #22c55e; }
+#answer { color: #38bdf8; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>🤖 Smart Interview Trainer</h2>
+
+<div id="question">Click Start</div>
+
+<button onclick="start()">Start</button>
+<button onclick="next()">Next</button>
+<button onclick="listen()">🎙 Answer</button>
+
+<div id="answer"></div>
+<div id="feedback"></div>
+</div>
+
+<script>
+let questions = [
+"Tell me about yourself",
+"What is Python?",
+"Write a program to reverse a string",
+"What is OOP?",
+"What is HTML?",
+"What is CSS Flexbox?",
+"What is JavaScript closure?",
+"What is API?",
+"What is SQL JOIN?",
+"What is normalization?",
+"What is machine learning?",
+"What is overfitting?",
+"Explain your project",
+"What challenges did you face?",
+"How do you debug code?",
+"What is Git?",
+"What is REST API?",
+"Difference between list and tuple",
+"What is recursion?",
+"Write factorial logic",
+"What is time complexity?",
+"What is Big O?",
+"What is stack vs queue?",
+"What is database indexing?",
+"What is cloud computing?",
+"What is Docker?",
+"What is React?",
+"What is responsive design?",
+"What is async await?",
+"What is JSON?",
+
+// Critical Thinking
+"How will you design a login system?",
+"How will you handle 1 million users?",
+"What will you do if server crashes?",
+"How do you optimize slow code?",
+"How will you secure a website?",
+
+// Behavioral
+"How do you handle stress?",
+"Tell me about failure",
+"What motivates you?",
+"Why should we hire you?"
+];
+
+let index = 0;
+
+function speak(text){
+    let s = new SpeechSynthesisUtterance(text);
+    s.lang="en-US";
+    speechSynthesis.speak(s);
+}
+
+function start(){
+    index = 0;
+    ask();
+}
+
+function next(){
+    index++;
+    if(index >= questions.length){
+        document.getElementById("question").innerText="Completed ✅";
+        return;
+    }
+    ask();
+}
+
+function ask(){
+    let q = questions[index];
+    document.getElementById("question").innerText = q;
+    document.getElementById("feedback").innerText="";
+    document.getElementById("answer").innerText="";
+    speak(q);
+}
+
+function listen(){
+    let rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    rec.lang="en-US";
+    rec.start();
+
+    rec.onresult = function(e){
+        let text = e.results[0][0].transcript;
+        document.getElementById("answer").innerText="You said: " + text;
+        analyze(text);
+    }
+}
+
+function analyze(ans){
+    let feedback = "";
+
+    if(ans.length < 20){
+        feedback += "❌ Answer too short. Try explaining more.\n";
+    } else {
+        feedback += "✅ Good answer length.\n";
+    }
+
+    if(ans.includes("I think") || ans.includes("maybe")){
+        feedback += "⚠️ Avoid unsure words like 'I think'. Be confident.\n";
+    }
+
+    if(ans.split(" ").length < 5){
+        feedback += "❌ Speak clearly and complete sentences.\n";
+    }
+
+    feedback += "💡 Tip: Use simple English + examples.";
+
+    document.getElementById("feedback").innerText = feedback;
+}
+</script>
+
+</body>
+</html>
